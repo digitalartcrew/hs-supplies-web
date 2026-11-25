@@ -136,7 +136,7 @@ Steps 1–5 are done. Steps 6 onward need your action.
 5. ⬜ **Deploy preview** — `npx wrangler deploy` publishes to
    `hardhitta-supplies-web.<subdomain>.workers.dev` while `workers_dev: true`
    and routes stay commented out. Nothing touches the live domain.
-6. ⬜ **Register `hardhitta.supplies`** — see §7
+6. ✅ **`hardhitta.supplies` registered** at GoDaddy — see §7
 7. ⬜ **Add the zone to Cloudflare** and import DNS
 8. ⬜ **Approval**, then update nameservers at the registrar
 9. ⬜ **Verify zone Active**
@@ -148,19 +148,34 @@ Steps 1–5 are done. Steps 6 onward need your action.
 
 ---
 
-## 7. Domain status — blocker
+## 7. Domain status — registered, on GoDaddy nameservers
 
-`hardhitta.supplies` **is not registered.** Verified three ways on 2026-11-25:
+`hardhitta.supplies` is registered and resolving. State as of 2026-11-25:
 
-```
-dig +trace hardhitta.supplies NS   → NSEC3 denial-of-existence from .supplies
-RDAP (Identity Digital)            → 404 Object not found
-whois hardhitta.supplies           → falls through to IANA TLD record only
-```
+| | |
+|---|---|
+| Registrar | GoDaddy.com, LLC |
+| Nameservers | `ns23.domaincontrol.com`, `ns24.domaincontrol.com` (GoDaddy default) |
+| Apex `A` | `3.33.130.190`, `15.197.148.33` — GoDaddy parking |
+| `www` | `CNAME` → `hardhitta.supplies.` |
+| `_domainconnect` | `CNAME` → `_domainconnect.gd.domaincontrol.com.` (GoDaddy service) |
+| `MX` | none |
+| `TXT` / SPF / DKIM / DMARC | none |
+| `DS` / DNSSEC | not signed (`delegationSigned: false`) |
+| Registry status | `add period`, plus GoDaddy's default client locks |
 
-Register it before any DNS or deployment work. `.supplies` is an Identity
-Digital (Binky Moon) TLD; GoDaddy sells it, so registration can stay with your
-existing registrar account.
+**This makes the migration simple: there is nothing to preserve.** No mail is
+configured, so there is no MX/SPF/DKIM/DMARC to carry over, and no verification
+`TXT` records exist. The only live records are GoDaddy's parking page and the
+`_domainconnect` helper, both of which are replaced by this deployment.
+
+DNSSEC is off, so no pre-migration unsigning step is required. Do not enable it
+at GoDaddy before moving nameservers.
+
+> If `dig hardhitta.supplies NS` returns nothing while RDAP shows the domain as
+> registered, your resolver is negative-caching the pre-registration lookup.
+> Query the authoritative server directly to confirm:
+> `dig @ns23.domaincontrol.com hardhitta.supplies NS +short`
 
 ### The other domain in the brief
 
@@ -178,38 +193,36 @@ So DNS for that domain is delegated to **Wix**, not GoDaddy, and a Wix property
 exists but publishes nothing at the apex. No email records exist on it, so there
 is no mail to preserve. Nothing in this project modifies that domain.
 
+
 ---
 
 ## 8. Registrar → Cloudflare migration
 
-Once the domain is registered. Registration and renewal stay with the registrar;
-only the nameservers move.
+Registration and renewal stay with GoDaddy; only the nameservers move. The
+current record set is captured in §7 — there is nothing in it worth preserving.
 
-1. **Record the current state first.** Screenshot the registrar's DNS panel and save:
-   ```bash
-   for t in NS A AAAA MX TXT CNAME CAA SOA DS; do echo "--- $t"; dig +short hardhitta.supplies $t; done
-   dig +short _dmarc.hardhitta.supplies TXT
-   dig +short www.hardhitta.supplies
-   ```
-2. **Add the zone** in the Cloudflare dashboard → Add a site → enter the domain →
+1. **Add the zone** in the Cloudflare dashboard → Add a site → enter the domain →
    pick a plan (Free is sufficient). Cloudflare scans and imports existing records.
-3. **Compare the import against your screenshot, record by record.** The scan is
-   best-effort and routinely misses records. Preserve: `MX`, SPF (`TXT`), DKIM
-   (`TXT` on selector subdomains), `_dmarc` (`TXT`), any verification `TXT`,
-   existing subdomains, service `CNAME`s, and `CAA`.
-4. **DNSSEC.** If it is ever enabled at the registrar, disable it there and wait
-   for the DS record to clear *before* changing nameservers — otherwise
-   resolvers reject the zone and the domain goes dark. For a freshly registered
-   domain this is normally off; confirm with `dig +short hardhitta.supplies DS`
-   (empty = off).
-5. **Read your assigned nameservers** from Cloudflare's overview page. They are
+   It will import the GoDaddy parking `A` records; delete those — the table
+   below defines what should replace them.
+2. **Nothing to preserve.** Confirmed in §7: no `MX`, no SPF/DKIM/DMARC, no
+   verification `TXT`. If you add email later, create those records in
+   Cloudflare rather than GoDaddy.
+3. **DNSSEC is off** (`delegationSigned: false`), so no unsigning step is
+   needed. Do not enable it at GoDaddy before the move — a stale `DS` record
+   makes resolvers reject the zone and the domain goes dark. Re-confirm with
+   `dig +short hardhitta.supplies DS` (empty = off).
+4. **Read your assigned nameservers** from Cloudflare's overview page. They are
    account-specific — I have not guessed them, and you should not use any pair
    found in a tutorial.
-6. **Update nameservers at the registrar** (GoDaddy: *My Products → DNS → Nameservers
-   → Change → I'll use my own*). Replace both entries with Cloudflare's pair.
-7. **Wait for activation.** Usually minutes; the TLD allows up to 24 h. Cloudflare
+5. **Update nameservers at GoDaddy**: *My Products → Domains →* `hardhitta.supplies`
+   *→ DNS → Nameservers → Change → I'll use my own nameservers*. Replace
+   `ns23.domaincontrol.com` and `ns24.domaincontrol.com` with Cloudflare's pair.
+   GoDaddy sets `clientUpdateProhibited` by default; changes made through their
+   own dashboard are unaffected by it.
+6. **Wait for activation.** Usually minutes; the TLD allows up to 24 h. Cloudflare
    emails on activation.
-8. **Verify:**
+7. **Verify:**
    ```bash
    dig +short hardhitta.supplies NS          # expect the Cloudflare pair
    curl -sI https://hardhitta.supplies | head -3
