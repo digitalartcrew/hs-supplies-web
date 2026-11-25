@@ -27,14 +27,20 @@
     "PUBLIC_HOST": "hardhitta.supplies"
   },
 
-  // Routes are commented out until the zone is live in Cloudflare. Deploying
-  // with routes pointing at a zone that does not exist yet fails the deploy.
-  // Uncomment after nameservers have moved and the zone is Active.
+  // Custom Domains rather than routes: this Worker serves the whole site, so
+  // there is no hostname to split. Cloudflare creates and manages the DNS
+  // records itself, which avoids a hand-maintained placeholder A record that
+  // can be deleted and strand the apex on error 1016.
+  //
+  // Uncomment together with flipping workers_dev to false, then redeploy.
+  // The zone must be in the same Cloudflare account you are logged into.
   //
   // "routes": [
-  //   { "pattern": "hardhitta.supplies/*", "zone_name": "hardhitta.supplies" },
-  //   { "pattern": "www.hardhitta.supplies/*", "zone_name": "hardhitta.supplies" }
+  //   { "pattern": "hardhitta.supplies", "custom_domain": true },
+  //   { "pattern": "www.hardhitta.supplies", "custom_domain": true }
   // ],
 
+  // true  → preview only at *.workers.dev, live domain untouched
+  // false → go live (set this when uncommenting routes above)
   "workers_dev": true
 }

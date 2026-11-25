@@ -216,22 +216,36 @@ was not transferred.
 > unsigned. If you add email later, create those records in Cloudflare, not
 > GoDaddy, since Cloudflare is now authoritative.
 
-### DNS records to create for this deployment
+### Custom Domain, not hand-made DNS records
 
-| Type | Name | Content | Proxy |
-|---|---|---|---|
-| A | `@` | `192.0.2.1` (placeholder) | Proxied |
-| A | `www` | `192.0.2.1` (placeholder) | Proxied |
+Do **not** create placeholder `A` records. This Worker serves the entire site,
+so attach the hostnames as Custom Domains and let Cloudflare own the DNS:
 
-The placeholder IP is never contacted — a proxied record is required for a
-Worker route to fire, and the Worker answers before any origin fetch. If you
-prefer, attach a Custom Domain to the Worker instead and Cloudflare manages the
-record for you.
+```jsonc
+"routes": [
+  { "pattern": "hardhitta.supplies", "custom_domain": true },
+  { "pattern": "www.hardhitta.supplies", "custom_domain": true }
+]
+```
+
+Cloudflare creates the records, keeps them proxied, and issues the certificate.
+Nothing is left for a human to delete by accident.
+
+> This replaces an earlier approach using Worker routes plus a placeholder
+> `192.0.2.1` origin record. On 2026-11-25 the apex `A` record was removed
+> during parking-record cleanup and the apex began returning **error 1016**
+> (no origin). A Custom Domain removes that failure mode.
+
+Before deploying with these uncommented, confirm the zone is in the same
+Cloudflare account you are authenticated against — `npx wrangler whoami` shows
+the account, and the zone must appear in its dashboard. Attaching a Custom
+Domain for a zone in a different account fails.
 
 ### www redirect
 
-Handled by a Redirect Rule, not the Worker, so it costs nothing and applies to
-every path. Dashboard → Rules → Redirect Rules → Create:
+With `www` attached as a Custom Domain it would serve the site directly, which
+is duplicate content. Add a Redirect Rule — Rules run before Workers, so this
+intercepts first. Dashboard → Rules → Redirect Rules → Create:
 
 - **If** hostname equals `www.hardhitta.supplies`
 - **Then** dynamic redirect, status **301**
