@@ -4,7 +4,7 @@
  * Two jobs in one Worker:
  *   1. Serve the static site (handled by the ASSETS binding).
  *   2. Reverse-proxy /hardhittasupplyco[/*] to Sweed POS so the menu appears
- *      to live on hardhittasupplies.com.
+ *      to live on hardhitta.supplies.
  *
  * Only the proxy prefix reaches this script — see `run_worker_first` in
  * wrangler.jsonc. Every other path is served directly from static assets and
@@ -15,12 +15,17 @@ export interface Env {
   ASSETS: Fetcher;
   /** Origin of the Sweed upstream, e.g. https://web-ui-prime.sweedpos.com */
   SWEED_UPSTREAM: string;
-  /** Public hostname customers see, e.g. hardhittasupplies.com */
+  /** Public hostname customers see, e.g. hardhitta.supplies */
   PUBLIC_HOST: string;
 }
 
-/** Sweed store identifier. Also the public path prefix — Sweed expects both to match. */
-export const MENU_PREFIX = "/hardhittasupplyco";
+/**
+ * Sweed store identifier. Also the public path prefix — Sweed expects both to match.
+ *
+ * Deliberately NOT exported: workerd treats every named export of the entry
+ * module as a Worker entrypoint and rejects a plain string at startup.
+ */
+const MENU_PREFIX = "/hardhittasupplyco";
 
 /**
  * Hop-by-hop and client-controlled forwarding headers. These are stripped from
@@ -85,7 +90,7 @@ function rewriteLocation(
 
 /**
  * Sweed sets cookies scoped to its own domain. A `Domain=...sweedpos.com`
- * attribute would be rejected outright by the browser on hardhittasupplies.com,
+ * attribute would be rejected outright by the browser on hardhitta.supplies,
  * which silently breaks cart and session persistence. Dropping the attribute
  * makes the cookie host-only for our domain, which is what we want. Security
  * attributes (Secure, HttpOnly, SameSite, Path, Max-Age) are preserved.
@@ -175,7 +180,7 @@ h1{font-weight:500;letter-spacing:.02em}p{color:#8E93A1;max-width:42ch;line-heig
 a{color:#C9A44C}</style></head><body><div>
 <h1>Our menu is taking a moment</h1>
 <p>We can't reach the live menu right now. Please try again shortly, or call the shop and we'll take care of you.</p>
-<p><a href="/">Return to hardhittasupplies.com</a></p>
+<p><a href="/">Return to hardhitta.supplies</a></p>
 </div></body></html>`,
     {
       status: 502,

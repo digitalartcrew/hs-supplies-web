@@ -6,4 +6,4 @@ Allow: /
 # Review with Sweed before changing this — see docs/SWEED_INTEGRATION.md.
 Allow: /hardhittasupplyco
 
-Sitemap: https://hardhittasupplies.com/sitemap.xml
+Sitemap: https://hardhitta.supplies/sitemap.xml

@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "hardhittasupplies-web",
+  "name": "hardhitta-supplies-web",
   "main": "src/index.ts",
   // Pinned to the newest date the installed workerd binary supports. Bump this
   // only together with a wrangler/miniflare upgrade, then re-run the tests —
@@ -24,7 +24,7 @@
 
   "vars": {
     "SWEED_UPSTREAM": "https://web-ui-prime.sweedpos.com",
-    "PUBLIC_HOST": "hardhittasupplies.com"
+    "PUBLIC_HOST": "hardhitta.supplies"
   },
 
   // Routes are commented out until the zone is live in Cloudflare. Deploying
@@ -32,8 +32,8 @@
   // Uncomment after nameservers have moved and the zone is Active.
   //
   // "routes": [
-  //   { "pattern": "hardhittasupplies.com/*", "zone_name": "hardhittasupplies.com" },
-  //   { "pattern": "www.hardhittasupplies.com/*", "zone_name": "hardhittasupplies.com" }
+  //   { "pattern": "hardhitta.supplies/*", "zone_name": "hardhitta.supplies" },
+  //   { "pattern": "www.hardhitta.supplies/*", "zone_name": "hardhitta.supplies" }
   // ],
 
   "workers_dev": true

@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import worker, { type Env } from "../src/index";
 
 const UPSTREAM = "https://web-ui-prime.sweedpos.com";
-const SITE = "https://hardhittasupplies.com";
+const SITE = "https://hardhitta.supplies";
 const PREFIX = "/hardhittasupplyco";
 
 const testEnv = env as unknown as Env;
@@ -100,7 +100,7 @@ describe("forwarded headers", () => {
     const calls = stubUpstream();
     await call(PREFIX);
     expect(calls[0].headers.get("x-forwarded-host")).toBe(
-      "hardhittasupplies.com",
+      "hardhitta.supplies",
     );
     expect(calls[0].headers.get("x-forwarded-proto")).toBe("https");
   });
@@ -114,7 +114,7 @@ describe("forwarded headers", () => {
       },
     });
     expect(calls[0].headers.get("x-forwarded-host")).toBe(
-      "hardhittasupplies.com",
+      "hardhitta.supplies",
     );
     expect(calls[0].headers.get("x-forwarded-proto")).toBe("https");
   });
@@ -163,7 +163,7 @@ describe("response handling", () => {
     );
     const res = await call(PREFIX);
     expect(res.headers.get("location")).toBe(
-      `https://hardhittasupplies.com${PREFIX}/menu`,
+      `https://hardhitta.supplies${PREFIX}/menu`,
     );
   });
 
