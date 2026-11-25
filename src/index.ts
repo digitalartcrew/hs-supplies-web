@@ -3,7 +3,7 @@
  *
  * Two jobs in one Worker:
  *   1. Serve the static site (handled by the ASSETS binding).
- *   2. Reverse-proxy /hardhittasupplyco[/*] to Sweed POS so the menu appears
+ *   2. Reverse-proxy /hardhittasupplies[/*] to Sweed POS so the menu appears
  *      to live on hardhitta.supplies.
  *
  * Only the proxy prefix reaches this script — see `run_worker_first` in
@@ -25,7 +25,7 @@ export interface Env {
  * Deliberately NOT exported: workerd treats every named export of the entry
  * module as a Worker entrypoint and rejects a plain string at startup.
  */
-const MENU_PREFIX = "/hardhittasupplyco";
+const MENU_PREFIX = "/hardhittasupplies";
 
 /**
  * Hop-by-hop and client-controlled forwarding headers. These are stripped from

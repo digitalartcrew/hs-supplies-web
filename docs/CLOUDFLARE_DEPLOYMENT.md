@@ -2,7 +2,7 @@
 
 Production domain: **hardhitta.supplies**
 Worker name: **hardhitta-supplies-web**
-Menu path: **/hardhittasupplyco** → `https://web-ui-prime.sweedpos.com/hardhittasupplyco`
+Menu path: **/hardhittasupplies** → `https://web-ui-prime.sweedpos.com/hardhittasupplies`
 
 ---
 
@@ -49,7 +49,7 @@ for normal page views.
   "directory": "./public",
   "binding": "ASSETS",
   "not_found_handling": "404-page",
-  "run_worker_first": ["/hardhittasupplyco", "/hardhittasupplyco/*"]
+  "run_worker_first": ["/hardhittasupplies", "/hardhittasupplies/*"]
 }
 ```
 
@@ -127,55 +127,63 @@ test suite fail to boot with `ERR_RUNTIME_FAILURE`. To move it forward: upgrade
 
 ## 6. Deployment sequence
 
-Steps 1–5 are done. Steps 6 onward need your action.
+Steps 1–9 are done. Step 10 onward need your action.
 
 1. ✅ Inspect and back up existing configuration
 2. ✅ Website code changes
 3. ✅ Reverse proxy implemented
 4. ✅ Local tests pass
-5. ⬜ **Deploy preview** — `npx wrangler deploy` publishes to
-   `hardhitta-supplies-web.<subdomain>.workers.dev` while `workers_dev: true`
-   and routes stay commented out. Nothing touches the live domain.
-6. ✅ **`hardhitta.supplies` registered** at GoDaddy — see §7
-7. ⬜ **Add the zone to Cloudflare** and import DNS
-8. ⬜ **Approval**, then update nameservers at the registrar
-9. ⬜ **Verify zone Active**
-10. ⬜ **Uncomment `routes`** in `wrangler.jsonc`, set `workers_dev: false`, redeploy
-11. ⬜ **Verify HTTPS**
-12. ⬜ **Sweed provisions the store** — see `SWEED_INTEGRATION.md`
-13. ⬜ **Validate** the full customer journey
-14. ⬜ **Monitor**
+5. ✅ `hardhitta.supplies` registered at GoDaddy
+6. ✅ Zone added to Cloudflare
+7. ✅ Nameservers moved to Cloudflare (`aaron` / `naomi.ns.cloudflare.com`)
+8. ✅ Zone Active — apex and `www` proxied, valid certificate
+9. ✅ Store slug updated to `/hardhittasupplies` per Sweed
+10. ⬜ **Replace the imported GoDaddy parking records** — see §7
+11. ⬜ **`npx wrangler login`** — the stored token is expired
+12. ⬜ **Deploy preview** — `npx wrangler deploy` with `workers_dev: true` and
+    routes commented out publishes to `*.workers.dev` only; the live domain is
+    untouched. Validate there first.
+13. ⬜ **Go live** — uncomment `routes` in `wrangler.jsonc`, set
+    `workers_dev: false`, redeploy
+14. ⬜ **Add the www redirect rule** — see §8
+15. ⬜ **Sweed provisions the store** — see `SWEED_INTEGRATION.md`
+16. ⬜ **Validate** the full customer journey
+17. ⬜ **Monitor**
 
 ---
 
-## 7. Domain status — registered, on GoDaddy nameservers
+## 7. Domain status — live on Cloudflare
 
-`hardhitta.supplies` is registered and resolving. State as of 2026-11-25:
+Verified 2026-11-25.
 
 | | |
 |---|---|
-| Registrar | GoDaddy.com, LLC |
-| Nameservers | `ns23.domaincontrol.com`, `ns24.domaincontrol.com` (GoDaddy default) |
-| Apex `A` | `3.33.130.190`, `15.197.148.33` — GoDaddy parking |
-| `www` | `CNAME` → `hardhitta.supplies.` |
-| `_domainconnect` | `CNAME` → `_domainconnect.gd.domaincontrol.com.` (GoDaddy service) |
-| `MX` | none |
-| `TXT` / SPF / DKIM / DMARC | none |
-| `DS` / DNSSEC | not signed (`delegationSigned: false`) |
-| Registry status | `add period`, plus GoDaddy's default client locks |
+| Registrar | GoDaddy.com, LLC (registration and renewal stay here) |
+| Nameservers | `aaron.ns.cloudflare.com`, `naomi.ns.cloudflare.com` |
+| Delegation | confirmed at the `.supplies` registry and via 1.1.1.1 / 8.8.8.8 |
+| Apex `A` | `172.67.183.16`, `104.21.36.15` — Cloudflare proxied |
+| `www` | same Cloudflare proxied addresses |
+| TLS | Let's Encrypt via Cloudflare, issued 2026-11-25, valid to 2027-02-23 |
+| MX / TXT / DNSSEC | none / none / unsigned |
 
-**This makes the migration simple: there is nothing to preserve.** No mail is
-configured, so there is no MX/SPF/DKIM/DMARC to carry over, and no verification
-`TXT` records exist. The only live records are GoDaddy's parking page and the
-`_domainconnect` helper, both of which are replaced by this deployment.
+### Outstanding: the origin still points at GoDaddy parking
 
-DNSSEC is off, so no pre-migration unsigning step is required. Do not enable it
-at GoDaddy before moving nameservers.
+Cloudflare imported GoDaddy's parking `A` records (`3.33.130.190`,
+`15.197.148.33`) and is proxying to them. `https://hardhitta.supplies`
+currently returns a 114-byte GoDaddy lander redirect:
 
-> If `dig hardhitta.supplies NS` returns nothing while RDAP shows the domain as
-> registered, your resolver is negative-caching the pre-registration lookup.
-> Query the authoritative server directly to confirm:
-> `dig @ns23.domaincontrol.com hardhitta.supplies NS +short`
+```html
+<script>window.onload=function(){window.location.href="/lander"}</script>
+```
+
+Deploying the Worker with routes enabled takes precedence over these records,
+so this resolves itself at go-live. But the stale records should be cleaned up:
+in Cloudflare DNS, replace the apex and `www` `A` records with the placeholder
+below, or attach a Custom Domain to the Worker and let Cloudflare manage them.
+
+> **Stale resolver cache.** A local `dig` may still return the old GoDaddy
+> nameservers for a while. Check the registry directly:
+> `dig @v2n1.nic.supplies hardhitta.supplies NS +norecurse +noall +authority`
 
 ### The other domain in the brief
 
@@ -196,37 +204,17 @@ is no mail to preserve. Nothing in this project modifies that domain.
 
 ---
 
-## 8. Registrar → Cloudflare migration
+## 8. DNS configuration
 
-Registration and renewal stay with GoDaddy; only the nameservers move. The
-current record set is captured in §7 — there is nothing in it worth preserving.
+The nameserver migration is complete (§7). This section is what remains.
 
-1. **Add the zone** in the Cloudflare dashboard → Add a site → enter the domain →
-   pick a plan (Free is sufficient). Cloudflare scans and imports existing records.
-   It will import the GoDaddy parking `A` records; delete those — the table
-   below defines what should replace them.
-2. **Nothing to preserve.** Confirmed in §7: no `MX`, no SPF/DKIM/DMARC, no
-   verification `TXT`. If you add email later, create those records in
-   Cloudflare rather than GoDaddy.
-3. **DNSSEC is off** (`delegationSigned: false`), so no unsigning step is
-   needed. Do not enable it at GoDaddy before the move — a stale `DS` record
-   makes resolvers reject the zone and the domain goes dark. Re-confirm with
-   `dig +short hardhitta.supplies DS` (empty = off).
-4. **Read your assigned nameservers** from Cloudflare's overview page. They are
-   account-specific — I have not guessed them, and you should not use any pair
-   found in a tutorial.
-5. **Update nameservers at GoDaddy**: *My Products → Domains →* `hardhitta.supplies`
-   *→ DNS → Nameservers → Change → I'll use my own nameservers*. Replace
-   `ns23.domaincontrol.com` and `ns24.domaincontrol.com` with Cloudflare's pair.
-   GoDaddy sets `clientUpdateProhibited` by default; changes made through their
-   own dashboard are unaffected by it.
-6. **Wait for activation.** Usually minutes; the TLD allows up to 24 h. Cloudflare
-   emails on activation.
-7. **Verify:**
-   ```bash
-   dig +short hardhitta.supplies NS          # expect the Cloudflare pair
-   curl -sI https://hardhitta.supplies | head -3
-   ```
+Registration and renewal stay with GoDaddy. Only DNS was delegated; the domain
+was not transferred.
+
+> Historical note: the move needed no record preservation — the domain had no
+> `MX`, SPF, DKIM, DMARC or verification `TXT` records, and DNSSEC was
+> unsigned. If you add email later, create those records in Cloudflare, not
+> GoDaddy, since Cloudflare is now authoritative.
 
 ### DNS records to create for this deployment
 
@@ -259,9 +247,9 @@ Run after the zone is live and Sweed has provisioned the store.
 ```bash
 curl -sI https://hardhitta.supplies                                  # 200
 curl -sI https://www.hardhitta.supplies                              # 301 → apex
-curl -sI https://hardhitta.supplies/hardhittasupplyco                # expect 200
-curl -sI https://hardhitta.supplies/hardhittasupplyco/               # expect 200
-curl -sI "https://hardhitta.supplies/hardhittasupplyco/menu/item?id=5"
+curl -sI https://hardhitta.supplies/hardhittasupplies                # expect 200
+curl -sI https://hardhitta.supplies/hardhittasupplies/               # expect 200
+curl -sI "https://hardhitta.supplies/hardhittasupplies/menu/item?id=5"
 curl -sI https://hardhitta.supplies/robots.txt                       # 200
 curl -sI https://hardhitta.supplies/nope                             # 404
 ```
@@ -297,7 +285,7 @@ Nothing in the proxy logs request bodies, cookies, or headers.
 
 | Symptom | Likely cause | Check |
 |---|---|---|
-| `Store is not found` (404, 192 b) | Sweed has not provisioned the store for this domain | `curl -I https://web-ui-prime.sweedpos.com/hardhittasupplyco` — same response direct means it is upstream, not the proxy |
+| `Store is not found` (404, 192 b) | Sweed has not provisioned the store for this domain | `curl -I https://web-ui-prime.sweedpos.com/hardhittasupplies` — same response direct means it is upstream, not the proxy |
 | Friendly 502 page | Worker could not reach Sweed | `npx wrangler tail` |
 | Menu 404s but the site works | Route not matching | Confirm `run_worker_first` patterns and that routes are uncommented |
 | Site 404s but the menu works | Assets missing from the deploy | `npm run deploy:dry` → "Read N files from the assets directory" |

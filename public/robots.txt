@@ -4,6 +4,6 @@ Allow: /
 # The Sweed-hosted menu is a proxied third-party application. Crawl it, but
 # the canonical/indexable surface for the brand is the marketing site.
 # Review with Sweed before changing this — see docs/SWEED_INTEGRATION.md.
-Allow: /hardhittasupplyco
+Allow: /hardhittasupplies
 
 Sitemap: https://hardhitta.supplies/sitemap.xml
