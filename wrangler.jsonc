@@ -1,0 +1,40 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "hardhittasupplies-web",
+  "main": "src/index.ts",
+  // Pinned to the newest date the installed workerd binary supports. Bump this
+  // only together with a wrangler/miniflare upgrade, then re-run the tests —
+  // a date newer than the local runtime breaks `wrangler dev` and vitest.
+  "compatibility_date": "2026-08-22",
+
+  // Static site is served straight from the assets store. The Worker script
+  // only executes for the Sweed menu prefix, so normal page views cost no
+  // Worker invocations.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/hardhittasupplyco", "/hardhittasupplyco/*"]
+  },
+
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+
+  "vars": {
+    "SWEED_UPSTREAM": "https://web-ui-prime.sweedpos.com",
+    "PUBLIC_HOST": "hardhittasupplies.com"
+  },
+
+  // Routes are commented out until the zone is live in Cloudflare. Deploying
+  // with routes pointing at a zone that does not exist yet fails the deploy.
+  // Uncomment after nameservers have moved and the zone is Active.
+  //
+  // "routes": [
+  //   { "pattern": "hardhittasupplies.com/*", "zone_name": "hardhittasupplies.com" },
+  //   { "pattern": "www.hardhittasupplies.com/*", "zone_name": "hardhittasupplies.com" }
+  // ],
+
+  "workers_dev": true
+}
