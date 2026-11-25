@@ -4,7 +4,7 @@ import worker, { type Env } from "../src/index";
 
 const UPSTREAM = "https://web-ui-prime.sweedpos.com";
 const SITE = "https://hardhitta.supplies";
-const PREFIX = "/hardhittasupplies";
+const PREFIX = "/menu";
 
 const testEnv = env as unknown as Env;
 
@@ -72,7 +72,7 @@ describe("route matching", () => {
 describe("open proxy protection", () => {
   it("does not proxy a lookalike prefix", async () => {
     const calls = stubUpstream();
-    await call("/hardhittasupplies-evil/path");
+    await call("/menu-evil/path");
     expect(calls).toHaveLength(0);
   });
 

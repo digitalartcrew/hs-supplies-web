@@ -14,7 +14,7 @@
     "directory": "./public",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/hardhittasupplies", "/hardhittasupplies/*"]
+    "run_worker_first": ["/menu", "/menu/*"]
   },
 
   "observability": {

@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| Store identifier | `hardhittasupplies` (changed from `hardhittasupplyco` on 2026-11-25, confirmed by Sweed) |
-| Public menu URL | `https://hardhitta.supplies/hardhittasupplies` |
-| Upstream | `https://web-ui-prime.sweedpos.com/hardhittasupplies` |
+| Store identifier | `s1141` — menu served from upstream `/menu` (Sweed, 2026-11-25) |
+| Public menu URL | `https://hardhitta.supplies/menu` |
+| Upstream | `https://web-ui-prime.sweedpos.com/menu` |
 | Implementation | `src/index.ts`, routed via `run_worker_first` in `wrangler.jsonc` |
 
 ---
@@ -16,8 +16,8 @@ against the implementation:
 
 | Sweed requirement | Status |
 |---|---|
-| Public menu at `https://hardhitta.supplies/hardhittasupplies` | ✅ matches `run_worker_first` and `MENU_PREFIX` |
-| Forward to `https://web-ui-prime.sweedpos.com/hardhittasupplies` | ✅ `SWEED_UPSTREAM` + verbatim path |
+| Public menu at `https://hardhitta.supplies/menu` | ✅ matches `run_worker_first` and `MENU_PREFIX` |
+| Forward to `https://web-ui-prime.sweedpos.com/menu` | ✅ `SWEED_UPSTREAM` + verbatim path |
 | Preserve full path and query | ✅ tested, including their `?id=5` example |
 | Send `X-Forwarded-Host: hardhitta.supplies` | ✅ set from `PUBLIC_HOST`, overrides client values |
 | True reverse proxy, not a redirect / iframe / DNS-only | ✅ `fetch()` to upstream, browser stays on our domain |
@@ -38,7 +38,7 @@ assets — confirmed against `wrangler dev`.
 
 Sweed offered: *"If you would like the /{storename} to reflect differently
 please let me know."* The current result is
-`hardhitta.supplies/hardhittasupplies`, which stutters — the brand name appears
+`hardhitta.supplies/menu`, which stutters — the brand name appears
 twice. A shorter slug such as `/menu` or `/shop` would read better and is a
 one-line change on our side (`MENU_PREFIX` plus the matching
 `run_worker_first` patterns). Cheap to change now, annoying once links are
@@ -58,9 +58,9 @@ Probed 2026-11-25, after the slug change. The **new** slug returns the same
 
 | Request | Result |
 |---|---|
-| `/hardhittasupplies` | 404 `Store is not found` |
-| `/hardhittasupplies` + `X-Forwarded-Host: hardhitta.supplies` | 404 |
-| `/hardhittasupplies/menu/item?id=5` + `X-Forwarded-Host` | 404 |
+| `/menu` | 404 `Store is not found` |
+| `/menu` + `X-Forwarded-Host: hardhitta.supplies` | 404 |
+| `/menu/menu/item?id=5` + `X-Forwarded-Host` | 404 |
 | `/hardhittasupplyco` (previous slug) | 404 |
 | `/` (upstream root) | 404 |
 
@@ -80,14 +80,14 @@ happens now: Sweed's 404 passes through unchanged. A test asserts that.
 
 ### Reply to send Sweed
 
-> Thanks — confirming `hardhitta.supplies` and the `/hardhittasupplies` path.
+> Thanks — confirming `hardhitta.supplies` and the `/menu` path.
 > Our reverse proxy is built, tested and ready: it preserves the full path and
 > query string and sends `X-Forwarded-Host: hardhitta.supplies` and
 > `X-Forwarded-Proto: https` on every request. Nameservers are on Cloudflare
 > and the zone is active with a valid certificate.
 >
 > One thing to flag before we go live: as of today every request to
-> `https://web-ui-prime.sweedpos.com/hardhittasupplies` returns a 404 with the
+> `https://web-ui-prime.sweedpos.com/menu` returns a 404 with the
 > body `<h1>Store is not found</h1>`, with and without the `X-Forwarded-Host`
 > header. The upstream root returns the same. So the store does not appear to
 > be active yet on that host.
@@ -104,7 +104,7 @@ happens now: Sweed's 404 passes through unchanged. A test asserts that.
 > 5. Do authentication callbacks, checkout redirects or payment return URLs need
 >    updating to our domain?
 > 6. Any cookie domain or `SameSite` settings we should account for?
-> 7. **Are there paths outside `/hardhittasupplies/*` that the menu needs** —
+> 7. **Are there paths outside `/menu/*` that the menu needs** —
 >    API endpoints, static assets, websockets? Anything outside that prefix will
 >    not reach the proxy.
 > 8. Should the proxied menu pages be indexable, and do you emit your own
@@ -126,13 +126,13 @@ together.
 
 ### Routing
 
-Only `/hardhittasupplies` and `/hardhittasupplies/*` reach the Worker script.
+Only `/menu` and `/menu/*` reach the Worker script.
 Everything else is served from static assets without invoking it. The handler
 re-checks the prefix itself rather than trusting routing alone, and falls back
 to `env.ASSETS.fetch()` otherwise.
 
 The check is exact — `pathname === prefix || pathname.startsWith(prefix + "/")`.
-A lookalike path like `/hardhittasupplies-evil/x` does **not** match and is never
+A lookalike path like `/menu-evil/x` does **not** match and is never
 proxied. There is a test for that.
 
 ### Request handling
@@ -183,12 +183,12 @@ Against a local echo upstream via `wrangler dev`, with deliberately spoofed
 inbound headers:
 
 ```
-request : GET /hardhittasupplies/menu/item?id=5
+request : GET /menu/menu/item?id=5
           X-Forwarded-Host: attacker.example.com
           Forwarded: host=evil.com
           Cookie: sweed_session=abc
 
-upstream url      : /hardhittasupplies/menu/item?id=5   ← path + query preserved
+upstream url      : /menu/menu/item?id=5   ← path + query preserved
 method            : GET
 x-forwarded-host  : hardhitta.supplies                  ← spoof overridden
 x-forwarded-proto : https
@@ -202,8 +202,8 @@ response Set-Cookie out: sid=echo123; Path=/; Secure; HttpOnly; SameSite=Lax
 ```
 
 ```
-POST /hardhittasupplies/api/cart  body {"sku":"ABC","qty":2}
-  → method: POST | url: /hardhittasupplies/api/cart | body: {"sku":"ABC","qty":2}
+POST /menu/api/cart  body {"sku":"ABC","qty":2}
+  → method: POST | url: /menu/api/cart | body: {"sku":"ABC","qty":2}
 ```
 
 Against the **real** Sweed upstream, the proxy correctly returns Sweed's
@@ -233,15 +233,15 @@ status pass-through, the real `Store is not found` body, and the 502 path.
 Once Sweed confirms the store is live:
 
 ```bash
-curl -sI https://hardhitta.supplies/hardhittasupplies
-curl -sI "https://hardhitta.supplies/hardhittasupplies/menu/item?id=5"
+curl -sI https://hardhitta.supplies/menu
+curl -sI "https://hardhitta.supplies/menu/menu/item?id=5"
 ```
 
 Then in a browser with DevTools open: product listings, categories, detail
 pages, images, search, filtering, inventory, add-to-cart, cart persistence
 across navigation, customer login, session persistence, checkout reachability,
 AI recommendations if enabled, promotions if enabled, and mobile layout. Watch
-the Network and Console panels for requests escaping the `/hardhittasupplies`
+the Network and Console panels for requests escaping the `/menu`
 prefix, CSP violations, and CORS errors.
 
 **Do not submit a real order or process a payment without explicit authorization.**

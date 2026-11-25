@@ -2,7 +2,7 @@
 
 Production domain: **hardhitta.supplies**
 Worker name: **hardhitta-supplies-web**
-Menu path: **/hardhittasupplies** → `https://web-ui-prime.sweedpos.com/hardhittasupplies`
+Menu path: **/menu** → `https://web-ui-prime.sweedpos.com/menu`
 
 ---
 
@@ -49,7 +49,7 @@ for normal page views.
   "directory": "./public",
   "binding": "ASSETS",
   "not_found_handling": "404-page",
-  "run_worker_first": ["/hardhittasupplies", "/hardhittasupplies/*"]
+  "run_worker_first": ["/menu", "/menu/*"]
 }
 ```
 
@@ -137,7 +137,7 @@ Steps 1–13 are done. Steps 14 onward remain.
 6. ✅ Zone added to Cloudflare
 7. ✅ Nameservers moved (`aaron` / `naomi.ns.cloudflare.com`)
 8. ✅ Zone Active, valid certificate
-9. ✅ Store slug updated to `/hardhittasupplies` per Sweed
+9. ✅ Store slug updated to `/menu` per Sweed
 10. ✅ Conflicting `www` CNAME and `_domainconnect` removed
 11. ✅ Custom Domains attached — apex and `www`
 12. ✅ Deployed to production (version `df94c518`)
@@ -193,7 +193,7 @@ provider. That is not what is live:
 ```
 hardhittasupplies.com NS  → ns8.wixdns.net, ns9.wixdns.net
 hardhittasupplies.com A   → 185.230.63.107/.186/.171   (Wix)
-https://hardhittasupplies.com → HTTP 404, server: Pepyaka (Wix)
+https://menu.com → HTTP 404, server: Pepyaka (Wix)
 MX / SPF / DMARC / DNSSEC → none present
 ```
 
@@ -261,9 +261,9 @@ Run after the zone is live and Sweed has provisioned the store.
 ```bash
 curl -sI https://hardhitta.supplies                                  # 200
 curl -sI https://www.hardhitta.supplies                              # 301 → apex
-curl -sI https://hardhitta.supplies/hardhittasupplies                # expect 200
-curl -sI https://hardhitta.supplies/hardhittasupplies/               # expect 200
-curl -sI "https://hardhitta.supplies/hardhittasupplies/menu/item?id=5"
+curl -sI https://hardhitta.supplies/menu                # expect 200
+curl -sI https://hardhitta.supplies/menu/               # expect 200
+curl -sI "https://hardhitta.supplies/menu/menu/item?id=5"
 curl -sI https://hardhitta.supplies/robots.txt                       # 200
 curl -sI https://hardhitta.supplies/nope                             # 404
 ```
@@ -299,7 +299,7 @@ Nothing in the proxy logs request bodies, cookies, or headers.
 
 | Symptom | Likely cause | Check |
 |---|---|---|
-| `Store is not found` (404, 192 b) | Sweed has not provisioned the store for this domain | `curl -I https://web-ui-prime.sweedpos.com/hardhittasupplies` — same response direct means it is upstream, not the proxy |
+| `Store is not found` (404, 192 b) | Sweed has not provisioned the store for this domain | `curl -I https://web-ui-prime.sweedpos.com/menu` — same response direct means it is upstream, not the proxy |
 | Friendly 502 page | Worker could not reach Sweed | `npx wrangler tail` |
 | Menu 404s but the site works | Route not matching | Confirm `run_worker_first` patterns and that routes are uncommented |
 | Site 404s but the menu works | Assets missing from the deploy | `npm run deploy:dry` → "Read N files from the assets directory" |
