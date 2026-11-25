@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hard Hitta Supplies — San Francisco Cannabis</title>
+<meta name="description" content="Hard Hitta Supplies. Premium California flower, curated in San Francisco. Licensed retail, same-day delivery.">
+
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_392,y_114,w_1495,h_1228/c_pad,w_64,h_64,b_rgb:07080B/f_png/v1795586308/hard-hitta-supplies/hhnoback.png">
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_392,y_114,w_1495,h_1228/c_pad,w_180,h_180,b_rgb:07080B/f_png/v1795586308/hard-hitta-supplies/hhnoback.png">
+
+<meta property="og:title" content="Hard Hitta Supplies">
+<meta property="og:description" content="Premium California flower, curated in San Francisco. Licensed retail, same-day delivery.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/c_pad,w_1200,h_630,b_rgb:07080B/f_jpg,q_auto/v1795586308/hard-hitta-supplies/hhnoback.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;1,6..96,400;1,6..96,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js" defer></script>
+
+<style>
+:root{
+  --ink:#07080B;
+  --ink-2:#0C0E13;
+  --ink-3:#13161D;
+  --paper:#F4F1EA;
+  --muted:#8E93A1;
+  --gold:#C9A44C;
+  --gold-soft:rgba(201,164,76,.22);
+  --rule:rgba(244,241,234,.10);
+
+  --display:'Bodoni Moda', serif;
+  --ui:'Inter', system-ui, sans-serif;
+  --mono:'JetBrains Mono', monospace;
+
+  --gutter:clamp(20px, 5vw, 80px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--ui);
+  font-weight:300;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+canvas{display:block}
+
+/* ---------- Shared typographic system ---------- */
+.label{
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.label .idx{color:var(--gold)}
+
+.display{
+  font-family:var(--display);
+  font-weight:500;
+  line-height:.92;
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+}
+.outline{
+  color:transparent;
+  -webkit-text-stroke:1px rgba(244,241,234,.55);
+}
+em.ital{font-style:italic;font-weight:400;color:var(--gold)}
+
+.rule{height:1px;background:var(--rule);width:100%}
+
+/* ---------- Film grain over everything ---------- */
+.grain{
+  position:fixed; inset:-200%;
+  pointer-events:none; z-index:9000;
+  opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainShift 700ms steps(3) infinite;
+}
+@keyframes grainShift{
+  0%{transform:translate(0,0)} 33%{transform:translate(-2%,1%)} 66%{transform:translate(1%,-2%)} 100%{transform:translate(0,0)}
+}
+
+/* ---------- Nav ---------- */
+nav{
+  position:fixed; top:0; left:0; width:100%;
+  padding:22px var(--gutter);
+  display:flex; align-items:center; justify-content:space-between;
+  z-index:1000;
+  transition:background .45s ease, padding .45s ease, border-color .45s ease;
+  border-bottom:1px solid transparent;
+}
+nav.stuck{
+  background:rgba(7,8,11,.82);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom-color:var(--rule);
+  padding:14px var(--gutter);
+}
+
+/* ---------- Brand mark ----------
+   The logo is deep navy, so on a near-black ground it needs a little
+   separation. A soft blue bloom does that without washing out the whites. */
+.hero-mark{
+  float: right;
+  height:clamp(74px,10.5vw,130px); width:auto;
+  margin-bottom:clamp(20px,3.4vh,34px);
+  filter:drop-shadow(0 12px 34px rgba(0,0,0,.65)) drop-shadow(0 0 44px rgba(42,98,198,.38));
+  animation:markIn 1.5s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes markIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+
+.wordmark{display:flex;align-items:center;gap:11px;line-height:1}
+.wordmark .mark{
+  height:32px; width:auto;
+  filter:drop-shadow(0 0 16px rgba(42,98,198,.35));
+  transition:height .45s ease;
+}
+nav.stuck .wordmark .mark{height:27px}
+.wm-text{display:flex;align-items:baseline;gap:9px}
+.wordmark .a{
+  font-family:var(--display); font-weight:700; font-size:1.05rem;
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.wordmark .b{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.3em;
+  text-transform:uppercase; color:var(--gold);
+}
+
+.nav-links{display:flex;gap:34px}
+.nav-links a{
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--muted);
+  position:relative; padding-bottom:3px;
+  transition:color .3s ease;
+}
+.nav-links a::after{
+  content:''; position:absolute; left:0; bottom:0; height:1px; width:0;
+  background:var(--gold); transition:width .4s cubic-bezier(.2,.8,.2,1);
+}
+.nav-links a:hover{color:var(--paper)}
+.nav-links a:hover::after{width:100%}
+
+.btn{
+  display:inline-flex; align-items:center; gap:12px;
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.2em;
+  text-transform:uppercase; cursor:pointer;
+  padding:13px 24px; border-radius:999px;
+  border:1px solid var(--gold); color:var(--gold);
+  background:transparent;
+  transition:background .4s ease, color .4s ease, transform .4s ease;
+}
+.btn:hover{background:var(--gold);color:var(--ink);transform:translateY(-1px)}
+.btn .arw{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.btn:hover .arw{transform:translateX(4px)}
+
+.btn-solid{
+  background:var(--paper); border-color:var(--paper); color:var(--ink);
+}
+.btn-solid:hover{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+.btn-ghost{border-color:rgba(244,241,234,.3);color:var(--paper)}
+.btn-ghost:hover{background:rgba(244,241,234,.08);border-color:var(--paper);color:var(--paper)}
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative; min-height:100svh;
+  display:grid; grid-template-rows:1fr auto;
+  padding:0 var(--gutter) 34px;
+  overflow:hidden;
+}
+.hero-media{position:absolute;inset:0;z-index:0}
+.hero-media img{
+  width:100%; height:100%; object-fit:cover; object-position:center 28%;
+  filter:grayscale(.35) contrast(1.08) brightness(.72) saturate(.85);
+  transform:scale(1.04);
+}
+.hero-scrim{
+  position:absolute; inset:0; z-index:1;
+  background:
+    linear-gradient(to top, var(--ink) 2%, rgba(7,8,11,.55) 42%, rgba(7,8,11,.35) 70%, rgba(7,8,11,.8) 100%),
+    radial-gradient(120% 90% at 50% 40%, transparent 30%, rgba(7,8,11,.75) 100%);
+}
+#hero-canvas{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;opacity:.9}
+
+.hero-inner{
+  position:relative; z-index:3;
+  align-self:end;
+  padding-bottom:clamp(30px,7vh,70px);
+}
+
+.hero-eyebrow{
+  display:flex; align-items:center; gap:16px; margin-bottom:clamp(18px,3vh,30px);
+}
+.hero-eyebrow .dash{width:clamp(28px,5vw,64px);height:1px;background:var(--gold)}
+
+.hero-title{
+  font-family:var(--display);
+  font-weight:500;
+  text-transform:uppercase;
+  line-height:.86;
+  letter-spacing:-.015em;
+  font-size:clamp(3.1rem, 13.5vw, 13rem);
+}
+.hero-title .l2{
+  display:block;
+  padding-left:clamp(0px,9vw,180px);
+}
+
+.hero-foot{
+  position:relative; z-index:3;
+  display:grid; grid-template-columns:1fr auto;
+  gap:clamp(24px,4vw,60px);
+  align-items:end;
+  padding-top:26px;
+  border-top:1px solid var(--rule);
+}
+.hero-foot p{
+  max-width:40ch; color:#B8BCC7; font-size:.94rem; line-height:1.7;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+.scroll-cue{
+  position:absolute; right:var(--gutter); top:50%;
+  transform:translateY(-50%) rotate(90deg); transform-origin:right center;
+  z-index:3; display:flex; align-items:center; gap:12px;
+}
+.scroll-cue .line{width:52px;height:1px;background:linear-gradient(to right,var(--gold),transparent);
+  animation:cueSlide 2.4s ease-in-out infinite}
+@keyframes cueSlide{0%,100%{opacity:.3;transform:translateX(-6px)}50%{opacity:1;transform:translateX(6px)}}
+
+/* ---------- Marquee ---------- */
+.marquee{
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  background:var(--ink-2);
+  overflow:hidden; padding:16px 0;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+          mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+}
+.marquee-track{display:flex;width:max-content;animation:scrollX 44s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee span{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.26em;
+  text-transform:uppercase; color:#6E7382; padding:0 26px;
+  display:inline-flex; align-items:center; gap:26px; white-space:nowrap;
+}
+.marquee span i{display:inline-block;width:4px;height:4px;background:var(--gold);border-radius:50%}
+@keyframes scrollX{to{transform:translateX(-50%)}}
+
+/* ---------- Generic section ---------- */
+section{padding:clamp(80px,13vh,160px) var(--gutter)}
+
+.sec-head{
+  display:grid; grid-template-columns:200px 1fr; gap:clamp(24px,5vw,80px);
+  align-items:start; margin-bottom:clamp(44px,7vh,80px);
+}
+.sec-head h2{
+  font-family:var(--display); font-weight:500; text-transform:uppercase;
+  font-size:clamp(1.9rem,5vw,4rem); line-height:1; letter-spacing:-.01em;
+  max-width:16ch;
+}
+
+/* ---------- Ethos ---------- */
+.ethos-body{
+  grid-column:2;
+  font-family:var(--display);
+  font-size:clamp(1.25rem,2.5vw,2.05rem);
+  line-height:1.4; font-weight:400; color:#DBD8D1; max-width:30ch;
+}
+.ethos-body .hl{color:var(--gold);font-style:italic}
+.ethos-note{
+  grid-column:2; margin-top:28px; max-width:46ch;
+  color:var(--muted); font-size:.93rem;
+}
+
+.stats{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  border-top:1px solid var(--rule); margin-top:clamp(50px,8vh,90px);
+}
+.stat{padding:34px 30px 34px 0;border-right:1px solid var(--rule)}
+.stat:last-child{border-right:none}
+.stat .n{
+  font-family:var(--display); font-size:clamp(2.2rem,4.5vw,3.4rem);
+  line-height:1; font-weight:500; display:block; margin-bottom:12px;
+}
+.stat .n sup{font-size:.4em;vertical-align:super;color:var(--gold);font-family:var(--mono)}
+.stat .t{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- Index rows ---------- */
+.collection{background:var(--ink-2);border-top:1px solid var(--rule)}
+.rows{border-top:1px solid var(--rule)}
+.row{
+  display:grid; grid-template-columns:90px 1fr minmax(0,38ch) 60px;
+  gap:clamp(16px,3vw,48px);
+  align-items:center;
+  padding:clamp(26px,4vh,42px) 0;
+  border-bottom:1px solid var(--rule);
+  position:relative; cursor:pointer;
+  transition:padding-left .55s cubic-bezier(.2,.8,.2,1);
+}
+.row::before{
+  content:''; position:absolute; left:-999px; right:-999px; top:0; bottom:0;
+  background:linear-gradient(to right,rgba(201,164,76,.09),transparent 65%);
+  opacity:0; transition:opacity .55s ease; pointer-events:none;
+}
+.row:hover{padding-left:clamp(10px,2vw,30px)}
+.row:hover::before{opacity:1}
+.row .num{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;color:var(--gold)}
+.row h3{
+  font-family:var(--display); font-weight:500; text-transform:uppercase;
+  font-size:clamp(1.5rem,3.6vw,2.6rem); line-height:1; letter-spacing:-.01em;
+  transition:color .4s ease;
+}
+.row:hover h3{color:var(--gold)}
+.row p{color:var(--muted);font-size:.9rem;line-height:1.65}
+.row .arw-c{
+  justify-self:end; width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--rule); display:grid;place-items:center;
+  color:var(--muted);
+  transition:all .45s cubic-bezier(.2,.8,.2,1);
+}
+.row:hover .arw-c{border-color:var(--gold);color:var(--gold);transform:rotate(-45deg)}
+
+/* ---------- Delivery band ---------- */
+.band{
+  position:relative; overflow:hidden;
+  background:var(--ink);
+  border-top:1px solid var(--rule);
+  text-align:center;
+  padding:clamp(90px,16vh,190px) var(--gutter);
+}
+.band .glow{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(900px,120vw); aspect-ratio:1;
+  background:radial-gradient(circle,rgba(201,164,76,.1) 0%,transparent 62%);
+  pointer-events:none;
+}
+.band-inner{position:relative;z-index:2;display:grid;justify-items:center;gap:clamp(20px,4vh,36px)}
+.band h2{
+  font-family:var(--display); font-weight:500; text-transform:uppercase;
+  font-size:clamp(2.2rem,8vw,6.5rem); line-height:.9; letter-spacing:-.015em;
+}
+.band p{max-width:52ch;color:var(--muted);font-size:.95rem}
+
+/* ---------- Visit ---------- */
+.visit{
+  display:grid; grid-template-columns:1.05fr .95fr;
+  gap:clamp(30px,6vw,90px); align-items:center;
+  border-top:1px solid var(--rule);
+}
+.visit h2{
+  font-family:var(--display); font-weight:500; text-transform:uppercase;
+  font-size:clamp(2rem,5.5vw,4.2rem); line-height:.95; margin:18px 0 34px;
+}
+.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 24px;margin-bottom:38px}
+.info h4{
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);font-weight:500;margin-bottom:10px;
+}
+.info p{font-size:.93rem;color:#C6CAD3;line-height:1.75}
+.info .dim{color:var(--muted)}
+
+.topo-wrap{
+  position:relative; aspect-ratio:4/5; min-height:320px;
+  border:1px solid var(--rule); background:var(--ink-2);
+  overflow:hidden;
+}
+#topo-canvas{position:absolute;inset:0}
+.topo-tag{
+  position:absolute; left:18px; bottom:16px; z-index:2;
+  font-family:var(--mono); font-size:.6rem; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--muted);
+}
+.topo-tag b{color:var(--gold);font-weight:500}
+
+/* ---------- Footer ---------- */
+footer{
+  border-top:1px solid var(--rule);
+  padding:clamp(60px,9vh,110px) var(--gutter) 34px;
+  background:var(--ink-2);
+}
+/* Footer signature: the full lockup sits in its own pool of light so the
+   navy wordmark underneath the monogram stays legible on the dark panel. */
+.foot-lockup{
+  position:relative;
+  width:min(290px,60vw);
+  margin:0 auto clamp(44px,7vh,84px);
+}
+.foot-lockup::before{
+  content:''; position:absolute; left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  width:190%; aspect-ratio:1;
+  background:radial-gradient(circle,rgba(42,98,198,.16) 0%,transparent 63%);
+  pointer-events:none;
+}
+.foot-lockup img{
+  position:relative; width:100%; height:auto;
+  filter:brightness(1.42) saturate(1.06);
+}
+.foot-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:34px; padding-bottom:46px; border-bottom:1px solid var(--rule);
+}
+.foot-col h5{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);font-weight:500;margin-bottom:16px;
+}
+.foot-col a,.foot-col p{display:block;font-size:.88rem;color:var(--muted);margin-bottom:9px;transition:color .3s}
+.foot-col a:hover{color:var(--paper)}
+.legal{
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:26px;
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#5C6170;
+}
+
+/* ---------- Reveal ---------- */
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .nav-links{display:none}
+  .sec-head{grid-template-columns:1fr;gap:18px}
+  .ethos-body,.ethos-note{grid-column:1}
+  .visit{grid-template-columns:1fr}
+  .row{grid-template-columns:54px 1fr 44px;gap:16px}
+  .row p{display:none}
+  .hero-foot{grid-template-columns:1fr}
+  .scroll-cue{display:none}
+  .stat{border-right:none;border-bottom:1px solid var(--rule);padding-right:0}
+  .stat:last-child{border-bottom:none}
+}
+@media (max-width:620px){
+  /* mark alone in the nav — the text lockup would crowd the Order button */
+  .wm-text{display:none}
+}
+@media (max-width:520px){
+  .hero-title .l2{padding-left:0}
+  .info-grid{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<nav id="nav">
+  <a href="#top" class="wordmark" aria-label="Hard Hitta Supplies — home">
+    <img class="mark" src="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_392,y_114,w_1495,h_1228/f_auto,q_auto,w_220/v1795586308/hard-hitta-supplies/hhnoback.png" alt="" width="220" height="181">
+    <span class="wm-text">
+      <span class="a">Hard Hitta</span>
+      <span class="b">Supplies</span>
+    </span>
+  </a>
+  <div class="nav-links">
+    <a href="#ethos">Ethos</a>
+    <a href="#collection">Collection</a>
+    <a href="#delivery">Delivery</a>
+    <a href="#visit">Visit</a>
+  </div>
+  <a href="#delivery" class="btn">Order <span class="arw">→</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header id="top" class="hero">
+  <div class="hero-media">
+    <img src="https://res.cloudinary.com/dcfagqjvf/image/upload/v1795585873/hard-hitta-supplies/Gemini_Generated_Image_1joeyp1joeyp1joe.jpg" alt="Hard Hitta Supplies">
+  </div>
+  <div class="hero-scrim"></div>
+  <div id="hero-canvas" aria-hidden="true"></div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <span class="label">Scroll</span>
+    <span class="line"></span>
+  </div>
+
+  <div class="hero-inner">
+    <img class="hero-mark" src="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_392,y_114,w_1495,h_1228/f_auto,q_auto,w_420/v1795586308/hard-hitta-supplies/hhnoback.png" alt="" width="420" height="345" fetchpriority="high">
+    <div class="hero-eyebrow">
+      <span class="dash"></span>
+      <span class="label">San Francisco, California</span>
+    </div>
+    <h1 class="hero-title">
+      Hard Hitta
+      <span class="l2 outline">Supplies</span>
+    </h1>
+  </div>
+
+  <div class="hero-foot">
+    <p>A cannabis house built on the standard of the city that raised it. Small-batch flower, deliberate curation, and service that never breaks character.</p>
+    <div class="hero-actions">
+      <!-- Swap href for the live store URL when the menu provider is chosen -->
+      <a href="#delivery" class="btn btn-solid">Shop the Menu <span class="arw">→</span></a>
+      <a href="#visit" class="btn btn-ghost">Visit the Shop <span class="arw">→</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="mq">
+    <span>Small-Batch Flower <i></i> Same-Day Delivery <i></i> Licensed California Retailer <i></i> Lab-Tested Every Harvest <i></i> Express In-Store Pickup <i></i></span>
+    <span>Small-Batch Flower <i></i> Same-Day Delivery <i></i> Licensed California Retailer <i></i> Lab-Tested Every Harvest <i></i> Express In-Store Pickup <i></i></span>
+  </div>
+</div>
+
+<!-- ============ ETHOS ============ -->
+<section id="ethos">
+  <div class="sec-head rv">
+    <span class="label"><span class="idx">01</span> / Ethos</span>
+    <h2>The Standard, Kept</h2>
+  </div>
+  <p class="ethos-body rv">We don't chase volume. We chase the <span class="hl">one jar</span> you remember — grown by people we know, tested before it earns a shelf, and handed over by a team that treats every pickup like the first one.</p>
+  <p class="ethos-note rv">Hard Hitta Supplies operates as a licensed California cannabis retailer in San Francisco. Every product on our floor is traceable from cultivator to counter, with current certificates of analysis available on request.</p>
+
+  <div class="stats rv">
+    <div class="stat"><span class="n">100<sup>%</sup></span><span class="t">Lab-Tested Inventory</span></div>
+    <div class="stat"><span class="n">40<sup>+</sup></span><span class="t">California Cultivators</span></div>
+    <div class="stat"><span class="n">60<sup>min</sup></span><span class="t">Typical Delivery Window</span></div>
+    <div class="stat"><span class="n">7<sup>days</sup></span><span class="t">Open Every Week</span></div>
+  </div>
+</section>
+
+<!-- ============ COLLECTION ============ -->
+<section id="collection" class="collection">
+  <div class="sec-head rv">
+    <span class="label"><span class="idx">02</span> / Collection</span>
+    <h2>What's on the Floor</h2>
+  </div>
+
+  <div class="rows">
+    <a class="row rv" href="#delivery">
+      <span class="num">01</span>
+      <h3>Flower</h3>
+      <p>Hand-trimmed, slow-cured, and selected by nose before it ever reaches the jar. Indoor and sun-grown, rotating weekly.</p>
+      <span class="arw-c">→</span>
+    </a>
+    <a class="row rv" href="#delivery">
+      <span class="num">02</span>
+      <h3>Pre-Rolls</h3>
+      <p>Single-strain and infused, packed from whole flower — never shake, never trim.</p>
+      <span class="arw-c">→</span>
+    </a>
+    <a class="row rv" href="#delivery">
+      <span class="num">03</span>
+      <h3>Concentrates</h3>
+      <p>Live rosin, badder, and solventless hash from extractors who publish their numbers.</p>
+      <span class="arw-c">→</span>
+    </a>
+    <a class="row rv" href="#delivery">
+      <span class="num">04</span>
+      <h3>Edibles</h3>
+      <p>Accurately dosed, consistently made, and clearly labeled. Low-dose options always stocked.</p>
+      <span class="arw-c">→</span>
+    </a>
+    <a class="row rv" href="#delivery">
+      <span class="num">05</span>
+      <h3>Apparel</h3>
+      <p>Limited runs in the house colorway. Dropped in small numbers, not restocked.</p>
+      <span class="arw-c">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ DELIVERY BAND ============ -->
+<div id="delivery" class="band">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="band-inner">
+    <span class="label rv"><span class="idx">03</span> / Delivery &amp; Pickup</span>
+    <h2 class="rv">Door to Door,<br><em class="ital">Across the City</em></h2>
+    <p class="rv">Live menu, real-time stock, and a driver on the way. Order ahead for express pickup, or let us bring it to you anywhere we're licensed to serve in San Francisco.</p>
+    <a href="#delivery" class="btn btn-solid rv" style="padding:17px 34px">Browse the Live Menu <span class="arw">→</span></a>
+    <span class="label rv" style="font-size:.6rem">21+ · Or 18+ with a valid medical recommendation · ID required on delivery</span>
+  </div>
+</div>
+
+<!-- ============ VISIT ============ -->
+<section id="visit" class="visit">
+  <div class="rv">
+    <span class="label"><span class="idx">04</span> / Visit</span>
+    <h2>Come See Us</h2>
+
+    <div class="info-grid">
+      <div class="info">
+        <h4>The Shop</h4>
+        <p>San Francisco, CA<br><span class="dim">Address on the live menu</span></p>
+      </div>
+      <div class="info">
+        <h4>Hours</h4>
+        <p>Mon – Sat &nbsp; 10:00 – 21:00<br>Sunday &nbsp;&nbsp;&nbsp;&nbsp; 10:00 – 19:00</p>
+      </div>
+      <div class="info">
+        <h4>Contact</h4>
+        <p><span class="dim">hello@hardhittasupplies.com</span></p>
+      </div>
+      <div class="info">
+        <h4>Licensing</h4>
+        <p><span class="dim">Licensed California cannabis retailer. License number displayed in store.</span></p>
+      </div>
+    </div>
+
+    <a href="#delivery" class="btn btn-ghost">Get Directions <span class="arw">→</span></a>
+  </div>
+
+  <div class="topo-wrap rv">
+    <div id="topo-canvas" aria-hidden="true"></div>
+    <span class="topo-tag">Bay Terrain <b>/</b> Generative Study</span>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="foot-lockup">
+    <img src="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/f_auto,q_auto,w_560/v1795586308/hard-hitta-supplies/hhnoback.png" alt="Hard Hitta Supplies" width="560" height="457" loading="lazy">
+  </div>
+  <div class="foot-grid">
+    <div class="foot-col">
+      <h5>Shop</h5>
+      <a href="#delivery">Live Menu</a>
+      <a href="#delivery">Delivery</a>
+      <a href="#delivery">Express Pickup</a>
+      <a href="#collection">Apparel</a>
+    </div>
+    <div class="foot-col">
+      <h5>House</h5>
+      <a href="#ethos">Ethos</a>
+      <a href="#visit">Visit</a>
+      <a href="#visit">Contact</a>
+    </div>
+    <div class="foot-col">
+      <h5>Legal</h5>
+      <a href="#">Terms of Service</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Accessibility</a>
+    </div>
+    <div class="foot-col">
+      <h5>Compliance</h5>
+      <p>For use by adults 21 and over. Keep out of reach of children and animals. Cannabis may impair concentration, coordination, and judgment. Do not drive or operate machinery under the influence.</p>
+    </div>
+  </div>
+  <div class="legal">
+    <span>© <span id="yr">2026</span> Hard Hitta Supplies</span>
+    <span>San Francisco, California</span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Nav state + scroll reveal + year
+   ============================================================ */
+(function(){
+  var nav = document.getElementById('nav');
+  var onScroll = function(){ nav.classList.toggle('stuck', window.scrollY > 40); };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  var items = document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){
+    items.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var sibs = Array.prototype.slice.call(e.target.parentNode.children)
+                    .filter(function(n){ return n.classList.contains('rv'); });
+        e.target.style.transitionDelay = (Math.min(sibs.indexOf(e.target), 6) * 80) + 'ms';
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, {threshold:0.14, rootMargin:'0px 0px -8% 0px'});
+    items.forEach(function(el){ io.observe(el); });
+  }
+})();
+
+/* ============================================================
+   p5 — Hero: gold haze drifting through a Perlin flow field.
+   Instance mode so both sketches can coexist.
+   ============================================================ */
+var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+window.addEventListener('load', function(){
+  if (typeof p5 === 'undefined') return;
+
+  /* ---- Sketch 1: hero haze ---------------------------------- */
+  new p5(function(s){
+    var motes = [], host, COUNT, zoff = 0, visible = true, mx = -999, my = -999;
+
+    function sizeOf(){ return [host.offsetWidth, host.offsetHeight]; }
+
+    function Mote(){ this.reset(true); }
+    Mote.prototype.reset = function(anywhere){
+      var d = sizeOf();
+      this.x = s.random(d[0]);
+      this.y = anywhere ? s.random(d[1]) : d[1] + s.random(40);
+      this.r = s.random(0.4, 1.9);
+      this.life = s.random(80, 420);
+      this.age = anywhere ? s.random(this.life) : 0;
+      this.spd = s.random(0.25, 0.9);
+      this.warm = s.random() > 0.3;   // mostly gold, some white
+    };
+    Mote.prototype.step = function(){
+      var d = sizeOf();
+      var ang = s.noise(this.x * 0.0016, this.y * 0.0016, zoff) * s.TWO_PI * 2.2;
+      this.x += s.cos(ang) * this.spd;
+      this.y += s.sin(ang) * this.spd - 0.32;   // slow rise
+
+      // gentle push away from the cursor — atmosphere, not a toy
+      var dx = this.x - mx, dy = this.y - my, dist = s.sqrt(dx*dx + dy*dy);
+      if (dist < 150 && dist > 0.01){
+        var f = (1 - dist/150) * 1.5;
+        this.x += (dx/dist) * f;
+        this.y += (dy/dist) * f;
+      }
+
+      this.age++;
+      if (this.age > this.life || this.y < -30 || this.x < -40 || this.x > d[0]+40) this.reset(false);
+    };
+    Mote.prototype.draw = function(){
+      var t = this.age / this.life;
+      var a = s.sin(t * s.PI) * (this.warm ? 150 : 95);
+      if (this.warm) s.fill(201, 164, 76, a); else s.fill(236, 233, 226, a * 0.75);
+      s.circle(this.x, this.y, this.r * 2);
+    };
+
+    s.setup = function(){
+      host = document.getElementById('hero-canvas');
+      var d = sizeOf();
+      var c = s.createCanvas(d[0], d[1]);
+      c.parent(host);
+      s.pixelDensity(1);
+      s.noStroke();
+      s.noiseDetail(2, 0.5);
+      COUNT = window.innerWidth < 760 ? 70 : 190;
+      for (var i = 0; i < COUNT; i++) motes.push(new Mote());
+      if (REDUCED) { s.redraw(); s.noLoop(); }
+
+      // only animate while the hero is on screen
+      if ('IntersectionObserver' in window){
+        new IntersectionObserver(function(e){
+          visible = e[0].isIntersecting;
+          if (REDUCED) return;
+          visible ? s.loop() : s.noLoop();
+        }, {threshold:0}).observe(host);
+      }
+    };
+
+    s.draw = function(){
+      s.clear();
+      var d = sizeOf();
+      mx = (s.mouseX >= 0 && s.mouseX <= d[0]) ? s.mouseX : -999;
+      my = (s.mouseY >= 0 && s.mouseY <= d[1]) ? s.mouseY : -999;
+      zoff += 0.0015;
+      for (var i = 0; i < motes.length; i++){ motes[i].step(); motes[i].draw(); }
+    };
+
+    s.windowResized = function(){
+      var d = sizeOf();
+      s.resizeCanvas(d[0], d[1]);
+    };
+  });
+
+  /* ---- Sketch 2: contour topography study ------------------- */
+  new p5(function(s){
+    var host, t = 0, visible = true;
+
+    function sizeOf(){ return [host.offsetWidth, host.offsetHeight]; }
+
+    s.setup = function(){
+      host = document.getElementById('topo-canvas');
+      var d = sizeOf();
+      var c = s.createCanvas(d[0], d[1]);
+      c.parent(host);
+      s.pixelDensity(1);
+      s.noFill();
+      s.noiseDetail(3, 0.55);
+      s.frameRate(30);
+      if (REDUCED) { s.redraw(); s.noLoop(); }
+
+      if ('IntersectionObserver' in window){
+        new IntersectionObserver(function(e){
+          visible = e[0].isIntersecting;
+          if (REDUCED) return;
+          visible ? s.loop() : s.noLoop();
+        }, {threshold:0}).observe(host);
+      }
+    };
+
+    s.draw = function(){
+      var d = sizeOf(), W = d[0], H = d[1];
+      s.background(12, 14, 19);
+      t += 0.0022;
+
+      var lines = 46, step = 7;
+      for (var i = 0; i < lines; i++){
+        var p = i / (lines - 1);
+        var baseY = H * 0.14 + p * H * 0.74;
+
+        // the ridge sits in the middle of the frame and fades at the edges
+        var emphasis = 1 - Math.abs(p - 0.5) * 1.5;
+        if (i % 6 === 0) s.stroke(201, 164, 76, 95 + emphasis * 80);
+        else             s.stroke(244, 241, 234, 22 + emphasis * 42);
+        s.strokeWeight(i % 6 === 0 ? 1 : 0.7);
+
+        s.beginShape();
+        for (var x = -step; x <= W + step; x += step){
+          var n  = s.noise(x * 0.004, p * 2.4, t);
+          var amp = (H * 0.26) * (0.35 + emphasis * 0.9);
+          var edge = Math.sin((x / W) * Math.PI);      // taper toward the frame
+          s.vertex(x, baseY - (n - 0.5) * amp * edge);
+        }
+        s.endShape();
+      }
+    };
+
+    s.windowResized = function(){
+      var d = sizeOf();
+      s.resizeCanvas(d[0], d[1]);
+    };
+  });
+});
+</script>
+
+</body>
+</html>
