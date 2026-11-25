@@ -179,7 +179,8 @@ display:grid;place-items:center;min-height:100vh;margin:0;text-align:center;padd
 h1{font-weight:500;letter-spacing:.02em}p{color:#8E93A1;max-width:42ch;line-height:1.7}
 a{color:#C9A44C}</style></head><body><div>
 <h1>Our menu is taking a moment</h1>
-<p>We can't reach the live menu right now. Please try again shortly, or call the shop and we'll take care of you.</p>
+<p>We can't reach the live menu right now. Please try again shortly, or call us
+on <a href="tel:+16288005700">(628) 800-5700</a> and we'll take care of you.</p>
 <p><a href="/">Return to hardhitta.supplies</a></p>
 </div></body></html>`,
     {

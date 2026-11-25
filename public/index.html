@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hard Hitta Supplies — San Francisco Cannabis</title>
-<meta name="description" content="Hard Hitta Supplies. Premium California flower, curated in San Francisco. Licensed retail, same-day delivery.">
+<meta name="description" content="Hard Hitta Supplies — licensed cannabis dispensary at 165 Mississippi Street, San Francisco. Open daily 9am–9:45pm. Premium California flower, same-day delivery.">
 
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_392,y_114,w_1495,h_1228/c_pad,w_64,h_64,b_rgb:07080B/f_png/v1795586308/hard-hitta-supplies/hhnoback.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_392,y_114,w_1495,h_1228/c_pad,w_180,h_180,b_rgb:07080B/f_png/v1795586308/hard-hitta-supplies/hhnoback.png">
@@ -14,10 +14,38 @@
 <meta property="og:url" content="https://hardhitta.supplies/">
 <meta property="og:site_name" content="Hard Hitta Supplies">
 <meta property="og:title" content="Hard Hitta Supplies">
-<meta property="og:description" content="Premium California flower, curated in San Francisco. Licensed retail, same-day delivery.">
+<meta property="og:description" content="Licensed cannabis dispensary at 165 Mississippi Street, San Francisco. Open daily 9am–9:45pm. Premium California flower, same-day delivery.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/c_pad,w_1200,h_630,b_rgb:07080B/f_jpg,q_auto/v1795586308/hard-hitta-supplies/hhnoback.png">
 <meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "Hard Hitta Supplies",
+  "url": "https://hardhitta.supplies",
+  "telephone": "+16288005700",
+  "image": "https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/c_pad,w_1200,h_630,b_rgb:07080B/f_jpg,q_auto/v1795586308/hard-hitta-supplies/hhnoback.png",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "165 Mississippi Street",
+    "addressLocality": "San Francisco",
+    "addressRegion": "CA",
+    "postalCode": "94107",
+    "addressCountry": "US"
+  },
+  "openingHoursSpecification": [{
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+    "opens": "09:00",
+    "closes": "21:45"
+  }],
+  "hasMenu": "https://hardhitta.supplies/menu",
+  "areaServed": { "@type": "City", "name": "San Francisco" },
+  "identifier": { "@type": "PropertyValue", "name": "California cannabis retail license", "value": "C10-0000768-LIC" }
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -373,6 +401,8 @@ section{padding:clamp(80px,13vh,160px) var(--gutter)}
   color:var(--gold);font-weight:500;margin-bottom:10px;
 }
 .info p{font-size:.93rem;color:#C6CAD3;line-height:1.75}
+.info a{border-bottom:1px solid var(--gold-soft);transition:color .3s,border-color .3s}
+.info a:hover{color:var(--gold);border-bottom-color:var(--gold)}
 .info .dim{color:var(--muted)}
 
 .topo-wrap{
@@ -603,23 +633,23 @@ footer{
     <div class="info-grid">
       <div class="info">
         <h4>The Shop</h4>
-        <p>San Francisco, CA<br><span class="dim">Address on the live menu</span></p>
+        <p>165 Mississippi Street<br>San Francisco, CA 94107</p>
       </div>
       <div class="info">
         <h4>Hours</h4>
-        <p>Mon – Sat &nbsp; 10:00 – 21:00<br>Sunday &nbsp;&nbsp;&nbsp;&nbsp; 10:00 – 19:00</p>
+        <p>Seven days a week<br>09:00 – 21:45 <span class="dim">PT</span></p>
       </div>
       <div class="info">
         <h4>Contact</h4>
-        <p><span class="dim">hello@hardhitta.supplies</span></p>
+        <p><a href="tel:+16288005700">(628) 800-5700</a></p>
       </div>
       <div class="info">
         <h4>Licensing</h4>
-        <p><span class="dim">Licensed California cannabis retailer. License number displayed in store.</span></p>
+        <p>Licensed California cannabis retailer<br><span class="dim">C10-0000768-LIC</span></p>
       </div>
     </div>
 
-    <a href="#delivery" class="btn btn-ghost">Get Directions <span class="arw">→</span></a>
+    <a href="https://www.google.com/maps/dir/?api=1&amp;destination=165+Mississippi+Street%2C+San+Francisco%2C+CA+94107" class="btn btn-ghost" target="_blank" rel="noopener">Get Directions <span class="arw">→</span></a>
   </div>
 
   <div class="topo-wrap rv">
@@ -642,10 +672,10 @@ footer{
       <a href="#collection">Apparel</a>
     </div>
     <div class="foot-col">
-      <h5>House</h5>
-      <a href="#ethos">Ethos</a>
-      <a href="#visit">Visit</a>
-      <a href="#visit">Contact</a>
+      <h5>Visit</h5>
+      <p>165 Mississippi Street<br>San Francisco, CA 94107</p>
+      <a href="tel:+16288005700">(628) 800-5700</a>
+      <p>Open daily 09:00 – 21:45</p>
     </div>
     <div class="foot-col">
       <h5>Legal</h5>
@@ -660,6 +690,7 @@ footer{
   </div>
   <div class="legal">
     <span>© <span id="yr">2026</span> Hard Hitta Supplies</span>
+    <span>License C10-0000768-LIC</span>
     <span>San Francisco, California</span>
   </div>
 </footer>
