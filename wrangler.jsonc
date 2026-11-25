@@ -35,12 +35,12 @@
   // Uncomment together with flipping workers_dev to false, then redeploy.
   // The zone must be in the same Cloudflare account you are logged into.
   //
-  // "routes": [
-  //   { "pattern": "hardhitta.supplies", "custom_domain": true },
-  //   { "pattern": "www.hardhitta.supplies", "custom_domain": true }
-  // ],
+  "routes": [
+    { "pattern": "hardhitta.supplies", "custom_domain": true },
+    { "pattern": "www.hardhitta.supplies", "custom_domain": true }
+  ],
 
   // true  → preview only at *.workers.dev, live domain untouched
   // false → go live (set this when uncommenting routes above)
-  "workers_dev": true
+  "workers_dev": false
 }

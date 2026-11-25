@@ -127,27 +127,27 @@ test suite fail to boot with `ERR_RUNTIME_FAILURE`. To move it forward: upgrade
 
 ## 6. Deployment sequence
 
-Steps 1–9 are done. Step 10 onward need your action.
+Steps 1–13 are done. Steps 14 onward remain.
 
 1. ✅ Inspect and back up existing configuration
 2. ✅ Website code changes
 3. ✅ Reverse proxy implemented
-4. ✅ Local tests pass
+4. ✅ Local tests pass (21/21)
 5. ✅ `hardhitta.supplies` registered at GoDaddy
 6. ✅ Zone added to Cloudflare
-7. ✅ Nameservers moved to Cloudflare (`aaron` / `naomi.ns.cloudflare.com`)
-8. ✅ Zone Active — apex and `www` proxied, valid certificate
+7. ✅ Nameservers moved (`aaron` / `naomi.ns.cloudflare.com`)
+8. ✅ Zone Active, valid certificate
 9. ✅ Store slug updated to `/hardhittasupplies` per Sweed
-10. ⬜ **Replace the imported GoDaddy parking records** — see §7
-11. ⬜ **`npx wrangler login`** — the stored token is expired
-12. ⬜ **Deploy preview** — `npx wrangler deploy` with `workers_dev: true` and
-    routes commented out publishes to `*.workers.dev` only; the live domain is
-    untouched. Validate there first.
-13. ⬜ **Go live** — uncomment `routes` in `wrangler.jsonc`, set
-    `workers_dev: false`, redeploy
-14. ⬜ **Add the www redirect rule** — see §8
+10. ✅ Conflicting `www` CNAME and `_domainconnect` removed
+11. ✅ Custom Domains attached — apex and `www`
+12. ✅ Deployed to production (version `df94c518`)
+13. ✅ Verified through the Cloudflare edge: site, robots, sitemap, 404
+    handling, open-proxy guard, and the Sweed proxy path
+14. ⬜ **Add the `www` → apex Redirect Rule** — see §8. Until then `www`
+    serves the site directly, which is duplicate content. The canonical tag
+    already points at the apex, which limits the SEO impact meanwhile.
 15. ⬜ **Sweed provisions the store** — see `SWEED_INTEGRATION.md`
-16. ⬜ **Validate** the full customer journey
+16. ⬜ **Validate** the full customer journey once the menu is live
 17. ⬜ **Monitor**
 
 ---
