@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hard Hitta Supplies — San Francisco Cannabis</title>
+<title>Cannabis Dispensary in San Francisco | Hard Hitta Supplies</title>
+<meta name="theme-color" content="#07080B">
+<meta name="geo.region" content="US-CA">
+<meta name="geo.placename" content="San Francisco">
+
+<link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+<link rel="dns-prefetch" href="https://res.cloudinary.com">
 <meta name="description" content="Hard Hitta Supplies — licensed cannabis dispensary at 165 Mississippi Street, San Francisco. Open daily 9am–9:45pm. Premium California flower, same-day delivery.">
 
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_392,y_114,w_1495,h_1228/c_pad,w_64,h_64,b_rgb:07080B/f_png/v1795586308/hard-hitta-supplies/hhnoback.png">
@@ -13,7 +19,7 @@
 
 <meta property="og:url" content="https://hardhitta.supplies/">
 <meta property="og:site_name" content="Hard Hitta Supplies">
-<meta property="og:title" content="Hard Hitta Supplies">
+<meta property="og:title" content="Cannabis Dispensary in San Francisco | Hard Hitta Supplies">
 <meta property="og:description" content="Licensed cannabis dispensary at 165 Mississippi Street, San Francisco. Open daily 9am–9:45pm. Premium California flower, same-day delivery.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/c_pad,w_1200,h_630,b_rgb:07080B/f_jpg,q_auto/v1795586308/hard-hitta-supplies/hhnoback.png">
@@ -22,28 +28,127 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Store",
-  "name": "Hard Hitta Supplies",
-  "url": "https://hardhitta.supplies",
-  "telephone": "+16288005700",
-  "image": "https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/c_pad,w_1200,h_630,b_rgb:07080B/f_jpg,q_auto/v1795586308/hard-hitta-supplies/hhnoback.png",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "165 Mississippi Street",
-    "addressLocality": "San Francisco",
-    "addressRegion": "CA",
-    "postalCode": "94107",
-    "addressCountry": "US"
-  },
-  "openingHoursSpecification": [{
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-    "opens": "09:00",
-    "closes": "21:45"
-  }],
-  "hasMenu": "https://hardhitta.supplies/menu",
-  "areaServed": { "@type": "City", "name": "San Francisco" },
-  "identifier": { "@type": "PropertyValue", "name": "California cannabis retail license", "value": "C10-0000768-LIC" }
+  "@graph": [
+    {
+      "@type": ["Store", "HealthAndBeautyBusiness"],
+      "@id": "https://hardhitta.supplies/#dispensary",
+      "name": "Hard Hitta Supplies",
+      "description": "Licensed cannabis dispensary in San Francisco's Potrero Hill, offering small-batch California flower, pre-rolls, concentrates and edibles for in-store pickup and same-day delivery.",
+      "url": "https://hardhitta.supplies",
+      "telephone": "+16288005700",
+      "image": "https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/c_pad,w_1200,h_630,b_rgb:07080B/f_jpg,q_auto/v1795586308/hard-hitta-supplies/hhnoback.png",
+      "logo": { "@id": "https://hardhitta.supplies/#logo" },
+      "parentOrganization": { "@id": "https://hardhitta.supplies/#organization" },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "165 Mississippi Street",
+        "addressLocality": "San Francisco",
+        "addressRegion": "CA",
+        "postalCode": "94107",
+        "addressCountry": "US"
+      },
+      "hasMap": "https://www.google.com/maps/search/?api=1&query=165+Mississippi+Street%2C+San+Francisco%2C+CA+94107",
+      "openingHoursSpecification": [{
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "09:00",
+        "closes": "21:45"
+      }],
+      "hasMenu": "https://hardhitta.supplies/menu",
+      "areaServed": { "@type": "City", "name": "San Francisco", "containedInPlace": { "@type": "State", "name": "California" } },
+      "currenciesAccepted": "USD",
+      "identifier": { "@type": "PropertyValue", "name": "California cannabis retail license", "value": "C10-0000768-LIC" },
+      "isAccessibleForFree": false,
+      "publicAccess": true,
+      "smokingAllowed": false,
+      "makesOffer": {
+        "@type": "Offer",
+        "itemOffered": [
+          { "@type": "Product", "name": "Cannabis flower" },
+          { "@type": "Product", "name": "Pre-rolls" },
+          { "@type": "Product", "name": "Concentrates" },
+          { "@type": "Product", "name": "Edibles" }
+        ],
+        "eligibleCustomerType": "Adults 21 and over, or 18+ with a valid medical recommendation"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://hardhitta.supplies/#organization",
+      "name": "Hard Hitta Supplies",
+      "url": "https://hardhitta.supplies",
+      "telephone": "+16288005700",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://hardhitta.supplies/#logo",
+        "url": "https://res.cloudinary.com/dcfagqjvf/image/upload/c_crop,x_125,y_114,w_2035,h_1660/f_auto,q_auto,w_560/v1795586308/hard-hitta-supplies/hhnoback.png",
+        "width": 560,
+        "height": 457,
+        "caption": "Hard Hitta Supplies"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+16288005700",
+        "contactType": "customer service",
+        "areaServed": "US-CA",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://hardhitta.supplies/#website",
+      "url": "https://hardhitta.supplies",
+      "name": "Hard Hitta Supplies",
+      "publisher": { "@id": "https://hardhitta.supplies/#organization" },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://hardhitta.supplies/#webpage",
+      "url": "https://hardhitta.supplies/",
+      "name": "Cannabis Dispensary in San Francisco | Hard Hitta Supplies",
+      "isPartOf": { "@id": "https://hardhitta.supplies/#website" },
+      "about": { "@id": "https://hardhitta.supplies/#dispensary" },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://hardhitta.supplies/#faq",
+      "isPartOf": { "@id": "https://hardhitta.supplies/#webpage" },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Where is Hard Hitta Supplies located?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We are at 165 Mississippi Street, San Francisco, CA 94107, in Potrero Hill. Street parking is available and we are a short walk from the 22nd Street Caltrain station." }
+        },
+        {
+          "@type": "Question",
+          "name": "What are your dispensary hours?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We are open seven days a week, 9:00am to 9:45pm Pacific Time, including weekends and most holidays." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you deliver cannabis in San Francisco?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. We deliver across San Francisco, with a typical delivery window of about 60 minutes. Order from our live menu and a valid government-issued ID is required at the door." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need a medical card to shop here?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. We serve adult-use customers aged 21 and over with a valid government-issued ID. Patients aged 18 and over may shop with a valid California medical recommendation." }
+        },
+        {
+          "@type": "Question",
+          "name": "Are you a licensed dispensary?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Hard Hitta Supplies holds California cannabis retail license C10-0000768-LIC. Every product on our shelves is lab-tested and traceable from cultivator to counter." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I order online for pickup?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Browse our live menu, place an express pickup order, and collect it in store. Bring the ID you ordered with." }
+        }
+      ]
+    }
+  ]
 }
 </script>
 
@@ -418,6 +523,43 @@ section{padding:clamp(80px,13vh,160px) var(--gutter)}
 }
 .topo-tag b{color:var(--gold);font-weight:500}
 
+/* ---------- FAQ ----------
+   <details> so it works without JS and reads correctly to screen readers. */
+.faq{background:var(--ink-2);border-top:1px solid var(--rule)}
+.faq-list{border-top:1px solid var(--rule)}
+
+.qa{border-bottom:1px solid var(--rule)}
+.qa summary{
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  padding:clamp(22px,3.4vh,32px) 0;
+  cursor:pointer; list-style:none;
+}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary h3{
+  font-family:var(--display); font-weight:500; text-transform:uppercase;
+  font-size:clamp(1.05rem,2.1vw,1.6rem); line-height:1.15; letter-spacing:-.01em;
+  transition:color .35s ease;
+}
+.qa summary:hover h3{color:var(--gold)}
+.qa summary:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+
+/* plus / minus built from two rules so it animates cleanly */
+.plus{position:relative;flex:0 0 16px;width:16px;height:16px}
+.plus::before,.plus::after{
+  content:''; position:absolute; left:0; top:50%; width:16px; height:1px;
+  background:var(--gold); transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.plus::after{transform:rotate(90deg)}
+.qa[open] .plus::after{transform:rotate(0deg)}
+.qa[open] summary h3{color:var(--gold)}
+
+.qa p{
+  color:var(--muted); font-size:.93rem; line-height:1.75;
+  max-width:68ch; padding:0 0 clamp(22px,3.2vh,30px);
+}
+.qa p a{color:var(--gold);border-bottom:1px solid var(--gold-soft)}
+.qa p a:hover{border-bottom-color:var(--gold)}
+
 /* ---------- Footer ---------- */
 footer{
   border-top:1px solid var(--rule);
@@ -514,7 +656,12 @@ footer{
 <!-- ============ HERO ============ -->
 <header id="top" class="hero">
   <div class="hero-media">
-    <img src="https://res.cloudinary.com/dcfagqjvf/image/upload/v1795585873/hard-hitta-supplies/Gemini_Generated_Image_1joeyp1joeyp1joe.jpg" alt="Hard Hitta Supplies">
+    <img src="https://res.cloudinary.com/dcfagqjvf/image/upload/f_auto,q_auto,w_2000/v1795585873/hard-hitta-supplies/Gemini_Generated_Image_1joeyp1joeyp1joe.jpg"
+         srcset="https://res.cloudinary.com/dcfagqjvf/image/upload/f_auto,q_auto,w_900/v1795585873/hard-hitta-supplies/Gemini_Generated_Image_1joeyp1joeyp1joe.jpg 900w,
+                 https://res.cloudinary.com/dcfagqjvf/image/upload/f_auto,q_auto,w_1400/v1795585873/hard-hitta-supplies/Gemini_Generated_Image_1joeyp1joeyp1joe.jpg 1400w,
+                 https://res.cloudinary.com/dcfagqjvf/image/upload/f_auto,q_auto,w_2000/v1795585873/hard-hitta-supplies/Gemini_Generated_Image_1joeyp1joeyp1joe.jpg 2000w"
+         sizes="100vw" width="2000" height="1125"
+         alt="Hard Hitta Supplies cannabis dispensary in San Francisco" fetchpriority="high">
   </div>
   <div class="hero-scrim"></div>
   <div id="hero-canvas" aria-hidden="true"></div>
@@ -537,7 +684,7 @@ footer{
   </div>
 
   <div class="hero-foot">
-    <p>A cannabis house built on the standard of the city that raised it. Small-batch flower, deliberate curation, and service that never breaks character.</p>
+    <p>A licensed San Francisco dispensary built on the standard of the city that raised it. Small-batch flower, deliberate curation, and service that never breaks character.</p>
     <div class="hero-actions">
       <!-- Swap href for the live store URL when the menu provider is chosen -->
       <a href="/menu" class="btn btn-solid">Shop the Menu <span class="arw">→</span></a>
@@ -549,8 +696,8 @@ footer{
 <!-- ============ MARQUEE ============ -->
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track" id="mq">
-    <span>Small-Batch Flower <i></i> Same-Day Delivery <i></i> Licensed California Retailer <i></i> Lab-Tested Every Harvest <i></i> Express In-Store Pickup <i></i></span>
-    <span>Small-Batch Flower <i></i> Same-Day Delivery <i></i> Licensed California Retailer <i></i> Lab-Tested Every Harvest <i></i> Express In-Store Pickup <i></i></span>
+    <span>Small-Batch Flower <i></i> Same-Day Delivery <i></i> Licensed San Francisco Dispensary <i></i> Lab-Tested Every Harvest <i></i> Express In-Store Pickup <i></i></span>
+    <span>Small-Batch Flower <i></i> Same-Day Delivery <i></i> Licensed San Francisco Dispensary <i></i> Lab-Tested Every Harvest <i></i> Express In-Store Pickup <i></i></span>
   </div>
 </div>
 
@@ -561,7 +708,7 @@ footer{
     <h2>The Standard, Kept</h2>
   </div>
   <p class="ethos-body rv">We don't chase volume. We chase the <span class="hl">one jar</span> you remember — grown by people we know, tested before it earns a shelf, and handed over by a team that treats every pickup like the first one.</p>
-  <p class="ethos-note rv">Hard Hitta Supplies operates as a licensed California cannabis retailer in San Francisco. Every product on our floor is traceable from cultivator to counter, with current certificates of analysis available on request.</p>
+  <p class="ethos-note rv">Hard Hitta Supplies is a licensed cannabis dispensary on Mississippi Street in San Francisco&rsquo;s Potrero Hill, serving the whole city for pickup and delivery. Every product on our floor is traceable from cultivator to counter, with current certificates of analysis available on request.</p>
 
   <div class="stats rv">
     <div class="stat"><span class="n">100<sup>%</sup></span><span class="t">Lab-Tested Inventory</span></div>
@@ -579,31 +726,31 @@ footer{
   </div>
 
   <div class="rows">
-    <a class="row rv" href="/menu">
+    <a class="row rv" href="/menu/menu/flower-13518">
       <span class="num">01</span>
       <h3>Flower</h3>
       <p>Hand-trimmed, slow-cured, and selected by nose before it ever reaches the jar. Indoor and sun-grown, rotating weekly.</p>
       <span class="arw-c">→</span>
     </a>
-    <a class="row rv" href="/menu">
+    <a class="row rv" href="/menu/menu/prerolls-13522">
       <span class="num">02</span>
       <h3>Pre-Rolls</h3>
       <p>Single-strain and infused, packed from whole flower — never shake, never trim.</p>
       <span class="arw-c">→</span>
     </a>
-    <a class="row rv" href="/menu">
+    <a class="row rv" href="/menu/menu/concentrates-13519">
       <span class="num">03</span>
       <h3>Concentrates</h3>
       <p>Live rosin, badder, and solventless hash from extractors who publish their numbers.</p>
       <span class="arw-c">→</span>
     </a>
-    <a class="row rv" href="/menu">
+    <a class="row rv" href="/menu/menu/edibles-13523">
       <span class="num">04</span>
       <h3>Edibles</h3>
       <p>Accurately dosed, consistently made, and clearly labeled. Low-dose options always stocked.</p>
       <span class="arw-c">→</span>
     </a>
-    <a class="row rv" href="/menu">
+    <a class="row rv" href="/menu/menu/apparel-13527">
       <span class="num">05</span>
       <h3>Apparel</h3>
       <p>Limited runs in the house colorway. Dropped in small numbers, not restocked.</p>
@@ -628,7 +775,7 @@ footer{
 <section id="visit" class="visit">
   <div class="rv">
     <span class="label"><span class="idx">04</span> / Visit</span>
-    <h2>Come See Us</h2>
+    <h2>Come See Us in Potrero Hill</h2>
 
     <div class="info-grid">
       <div class="info">
@@ -645,7 +792,7 @@ footer{
       </div>
       <div class="info">
         <h4>Licensing</h4>
-        <p>Licensed California cannabis retailer<br><span class="dim">C10-0000768-LIC</span></p>
+        <p>Licensed California cannabis dispensary<br><span class="dim">C10-0000768-LIC</span></p>
       </div>
     </div>
 
@@ -654,7 +801,42 @@ footer{
 
   <div class="topo-wrap rv">
     <div id="topo-canvas" aria-hidden="true"></div>
-    <span class="topo-tag">Bay Terrain <b>/</b> Generative Study</span>
+    <span class="topo-tag">Potrero Hill <b>/</b> Generative Study</span>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="faq">
+  <div class="sec-head rv">
+    <span class="label"><span class="idx">05</span> / Questions</span>
+    <h2>Before You Come In</h2>
+  </div>
+
+  <div class="faq-list">
+    <details class="qa rv">
+      <summary><h3>Where is Hard Hitta Supplies located?</h3><span class="plus" aria-hidden="true"></span></summary>
+      <p>We're at 165 Mississippi Street, San Francisco, CA 94107, in Potrero Hill. Street parking is available and we're a short walk from the 22nd Street Caltrain station.</p>
+    </details>
+    <details class="qa rv">
+      <summary><h3>What are your dispensary hours?</h3><span class="plus" aria-hidden="true"></span></summary>
+      <p>Seven days a week, 9:00am to 9:45pm Pacific — weekends and most holidays included.</p>
+    </details>
+    <details class="qa rv">
+      <summary><h3>Do you deliver cannabis in San Francisco?</h3><span class="plus" aria-hidden="true"></span></summary>
+      <p>Yes. We deliver across San Francisco, with a typical window of about 60 minutes. Order from the live menu and have a valid government-issued ID ready at the door.</p>
+    </details>
+    <details class="qa rv">
+      <summary><h3>Do I need a medical card to shop here?</h3><span class="plus" aria-hidden="true"></span></summary>
+      <p>No. We serve adult-use customers 21 and over with a valid government-issued ID. Patients 18 and over may shop with a valid California medical recommendation.</p>
+    </details>
+    <details class="qa rv">
+      <summary><h3>Are you a licensed dispensary?</h3><span class="plus" aria-hidden="true"></span></summary>
+      <p>Yes — California cannabis retail license C10-0000768-LIC. Every product on our shelves is lab-tested and traceable from cultivator to counter.</p>
+    </details>
+    <details class="qa rv">
+      <summary><h3>Can I order online for pickup?</h3><span class="plus" aria-hidden="true"></span></summary>
+      <p>Yes. Browse the <a href="/menu">live menu</a>, place an express pickup order, and collect it in store. Bring the ID you ordered with.</p>
+    </details>
   </div>
 </section>
 
@@ -679,6 +861,7 @@ footer{
     </div>
     <div class="foot-col">
       <h5>Legal</h5>
+      <a href="#faq">FAQ</a>
       <a href="#">Terms of Service</a>
       <a href="#">Privacy Policy</a>
       <a href="#">Accessibility</a>
